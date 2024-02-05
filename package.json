@@ -1,0 +1,64 @@
+{
+  "type": "module",
+  "name": "@luma-dev/unist-util-visit-fast",
+  "version": "0.0.0-dev",
+  "description": "Faster version of unist-util-visit",
+  "files": [
+    "dist",
+    "*.tsbuildinfo"
+  ],
+  "exports": {
+    ".": "./dist/visit.js"
+  },
+  "scripts": {
+    "lint": "eslint --ext .ts,.tsx . && prettier --list-different .",
+    "lint-fix": "eslint --ext .ts,.tsx . --fix && prettier --write .",
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "typecheck-watch": "tsc --noEmit --watch",
+    "test": "vitest"
+  },
+  "keywords": [],
+  "author": "Luma <world@luma.email>",
+  "license": "CC0-1.0",
+  "devDependencies": {
+    "@mdx-js/mdx": "^3.0.0",
+    "@types/estree": "^1.0.5",
+    "@types/hast": "^3.0.3",
+    "@types/node": "^20.11.4",
+    "@types/prompt": "^1.1.8",
+    "@types/react": "^18.2.48",
+    "@types/unist": "^3.0.2",
+    "@typescript-eslint/eslint-plugin": "^6.19.0",
+    "@typescript-eslint/parser": "^6.19.0",
+    "eslint": "^8.56.0",
+    "mdast": "^3.0.0",
+    "mdast-util-from-markdown": "^2.0.0",
+    "mdast-util-mdx-expression": "^2.0.0",
+    "mdast-util-mdx-jsx": "^3.0.0",
+    "mdast-util-mdxjs-esm": "^2.0.1",
+    "micromark-util-types": "^2.0.0",
+    "prettier": "^3.2.4",
+    "prompt": "^1.3.0",
+    "react": "^18.2.0",
+    "remark-frontmatter": "^5.0.0",
+    "remark-math": "^6.0.0",
+    "semantic-release": "^23.0.0",
+    "shx": "^0.3.4",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.0"
+  },
+  "engines": {
+    "node": ">=20",
+    "npm": ">=10"
+  },
+  "packageManager": "npm@10.3.0+sha256.ec92e7332e3f7aef6feb2b3c9585fde534cd56905cf26e77debc69e4e2b44892",
+  "dependencies": {
+    "hast-util-to-text": "4",
+    "yaml": "2",
+    "zod": "3"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
