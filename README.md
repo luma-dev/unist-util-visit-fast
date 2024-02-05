@@ -23,7 +23,7 @@ import {
   DELETE,
   DELETE_EXIT,
   DELETE_BREAK,
-} from '@luma-dev/unist-util-visit-fast';
+} from "@luma-dev/unist-util-visit-fast";
 ```
 
 Please refer to [`src/__tests__/visit.spec.ts`](src/__tests__/visit.spec.ts)
