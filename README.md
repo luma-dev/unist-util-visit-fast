@@ -30,6 +30,6 @@ Please refer to [`src/__tests__/visit.spec.ts`](src/__tests__/visit.spec.ts)
 
 ## Why?
 
-[unist-util-visit](https://github.com/syntax-tree/unist-util-visit) took $O(n^2)$ time when you have $n$ children. This library just takes $O(n)$ time.
+[unist-util-visit](https://github.com/syntax-tree/unist-util-visit) takes $O(n^2)$ time when you have $n$ children. This library just takes $O(n)$ time.
 
 [Quick benchmark](https://jsbench.me/) for the key point logic.

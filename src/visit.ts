@@ -222,7 +222,7 @@ export const visitAsync = async <T>(
           }
         }
         if (control.type === "continue") {
-          dfs(child);
+          await dfs(child);
           if (exitting) return;
         } else if (control.type === "step_over") {
           continue;
