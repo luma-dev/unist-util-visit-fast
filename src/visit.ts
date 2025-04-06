@@ -63,7 +63,7 @@ type NonAny<T> = 0 extends 1 & T ? unknown : T;
 type RecursiveChildren<T, depth = "....."> = depth extends `.${infer nextDepth}`
   ? T extends { children: (infer U)[] }
     ? NonAny<T> | NonAny<U> | RecursiveChildren<U, nextDepth>
-    : never
+  : never
   : never;
 
 export const visit = <T>(
@@ -90,7 +90,9 @@ export const visit = <T>(
       throw new Error(`Root node cannot be deleted`);
     default:
       throw new Error(
-        `Unknown control type: ${(control satisfies never as { type: 0 }).type}`,
+        `Unknown control type: ${
+          (control satisfies never as { type: 0 }).type
+        }`,
       );
   }
   let exitting = false;
@@ -123,7 +125,9 @@ export const visit = <T>(
             return;
           } else {
             throw new Error(
-              `Unknown control type: ${(control.then satisfies never as { type: 0 }).type}`,
+              `Unknown control type: ${
+                (control.then satisfies never as { type: 0 }).type
+              }`,
             );
           }
         }
@@ -139,7 +143,9 @@ export const visit = <T>(
           return;
         } else {
           throw new Error(
-            `Unknown control type: ${(control satisfies never as { type: 0 }).type}`,
+            `Unknown control type: ${
+              (control satisfies never as { type: 0 }).type
+            }`,
           );
         }
         parents.pop();
@@ -147,4 +153,94 @@ export const visit = <T>(
     }
   };
   dfs(node);
+};
+
+export const visitAsync = async <T>(
+  node: T,
+  visitor: (
+    node: RecursiveChildren<T>,
+    parents: readonly ParentInfo[],
+  ) => VisitFlowControl | void | Promise<VisitFlowControl | void>,
+) => {
+  const parents: ParentInfo[] = [];
+  const control = await visitor(node as any, parents) ?? { type: "continue" };
+  switch (control.type) {
+    case "continue":
+      break;
+    case "step_over":
+      return;
+    case "break":
+      return;
+    case "exit":
+      return;
+    case "replace":
+      throw new Error(`Root node cannot be replaced`);
+    case "delete":
+      throw new Error(`Root node cannot be deleted`);
+    default:
+      throw new Error(
+        `Unknown control type: ${
+          (control satisfies never as { type: 0 }).type
+        }`,
+      );
+  }
+  let exitting = false;
+  const dfs = async (node: unknown) => {
+    if (
+      typeof node === "object" &&
+      node !== null &&
+      "children" in node &&
+      Array.isArray(node.children)
+    ) {
+      for (let index = 0; index < node.children.length; index++) {
+        const child: unknown = node.children[index];
+        parents.push({ node, index });
+        let control = await visitor(child as any, parents) ??
+          { type: "continue" };
+        if (control.type === "replace") {
+          node.children[index] = control.value;
+          control = control.then;
+        } else if (control.type === "delete") {
+          node.children.splice(index, 1);
+          index--;
+          if (
+            control.then.type === "continue" ||
+            control.then.type === "step_over"
+          ) {
+            continue;
+          } else if (control.then.type === "break") {
+            return;
+          } else if (control.then.type === "exit") {
+            exitting = true;
+            return;
+          } else {
+            throw new Error(
+              `Unknown control type: ${
+                (control.then satisfies never as { type: 0 }).type
+              }`,
+            );
+          }
+        }
+        if (control.type === "continue") {
+          dfs(child);
+          if (exitting) return;
+        } else if (control.type === "step_over") {
+          continue;
+        } else if (control.type === "break") {
+          return;
+        } else if (control.type === "exit") {
+          exitting = true;
+          return;
+        } else {
+          throw new Error(
+            `Unknown control type: ${
+              (control satisfies never as { type: 0 }).type
+            }`,
+          );
+        }
+        parents.pop();
+      }
+    }
+  };
+  await dfs(node);
 };
