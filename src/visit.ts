@@ -63,7 +63,7 @@ type NonAny<T> = 0 extends 1 & T ? unknown : T;
 type RecursiveChildren<T, depth = "....."> = depth extends `.${infer nextDepth}`
   ? T extends { children: (infer U)[] }
     ? NonAny<T> | NonAny<U> | RecursiveChildren<U, nextDepth>
-  : never
+    : never
   : never;
 
 export const visit = <T>(
@@ -163,7 +163,7 @@ export const visitAsync = async <T>(
   ) => VisitFlowControl | void | Promise<VisitFlowControl | void>,
 ) => {
   const parents: ParentInfo[] = [];
-  const control = await visitor(node as any, parents) ?? { type: "continue" };
+  const control = (await visitor(node as any, parents)) ?? { type: "continue" };
   switch (control.type) {
     case "continue":
       break;
@@ -195,8 +195,9 @@ export const visitAsync = async <T>(
       for (let index = 0; index < node.children.length; index++) {
         const child: unknown = node.children[index];
         parents.push({ node, index });
-        let control = await visitor(child as any, parents) ??
-          { type: "continue" };
+        let control = (await visitor(child as any, parents)) ?? {
+          type: "continue",
+        };
         if (control.type === "replace") {
           node.children[index] = control.value;
           control = control.then;
